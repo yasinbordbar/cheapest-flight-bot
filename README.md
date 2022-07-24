@@ -1,5 +1,11 @@
+
+#Run
+```bash
+node --loader ts-node/esm src/index.ts 
+```
+
+
 ### To Do:
 
-- [ ] Convert to TypeScript
 - [ ] Bypass Captcha 
 
