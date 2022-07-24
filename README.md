@@ -1,5 +1,5 @@
 
-#Run
+# Run
 ```bash
 node --loader ts-node/esm src/index.ts 
 ```
