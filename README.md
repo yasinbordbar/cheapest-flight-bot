@@ -1,7 +1,7 @@
 
-# Cheapest flight bot 
-
+# Cheapest flight bot
 A Selenium Web scrapper to report the cheapest weekly flights on Flightio and notify it via Telegram bot
+
 
 ## Run Locally
 Clone the project
@@ -9,9 +9,7 @@ Clone the project
 ```bash
   git clone https://github.com/yasinbordbar/cheapest-flight-bot.git
 ```
-
 Go to the project directory
-
 ```bash
   cd cheapest-flight-bot
 ```
