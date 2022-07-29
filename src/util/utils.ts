@@ -1,43 +1,42 @@
 import axios from "axios";
-import dotenv from "dotenv";
+import "dotenv/config";
 import { Flight } from "../type/types.js";
-dotenv.config();
 
-const sendMessageToTelegram = (pricesMessage: string) =>
-  axios.post(`https://api.telegram.org/${process.env.BOT_TOKEN}/sendMessage`, {
-    chat_id: process.env.CHAT_ID,
-    text: pricesMessage,
-    parse_mode: "markdown",
-  });
+const findCheapestWeekFlight = (
+  weekNumber: number,
+  weeklyPrices: number[]
+): Flight => {
+  const MINIMUM_PRICE = Math.min(...weeklyPrices);
+  const cheapestFlightDate = new Date();
+  cheapestFlightDate.setDate(
+    new Date().getDate() +
+      (weeklyPrices.indexOf(MINIMUM_PRICE) + 1 + (weekNumber - 1) * 7)
+  );
 
-const handleMessage = (
-  weekIndex: number,
-  weeklyPrices: number[],
-  cheapestFlight: Flight
-) =>
-  `Week ${weekIndex} \n${weeklyPrices.join("\n")} \n\nThe Minimum price is *${
-    cheapestFlight.price + " Toman"
-  }* on *${cheapestFlight.date}*!`;
+  return {
+    price: MINIMUM_PRICE.toLocaleString(),
+    date: convertToISODate(cheapestFlightDate),
+  };
+};
+
 const convertToISODate = (today: Date) => today.toISOString().substring(0, 10);
-
 const convertToNumber = (priceText: string) =>
   Number(priceText.match(/[0-9]+/g)?.join(""));
 
-const findCheapestWeekFlight = (weeklyPrices: any[], weekNumber: number) => {
-  const indexOfCheapestDay =
-    weeklyPrices.indexOf(Math.min(...weeklyPrices)) + 1;
-
-  const cheapestDay = new Date();
-  cheapestDay.setDate(
-    new Date().getDate() + (indexOfCheapestDay + (weekNumber - 1) * 7)
-  );
-
-  const cheapestFlight: Flight = {
-    price: Math.min(...weeklyPrices).toLocaleString(),
-    date: convertToISODate(cheapestDay),
-  };
-  return cheapestFlight;
+const handleMessage = (
+  weekNumber: number,
+  weeklyPrices: number[],
+  cheapestFlight: Flight
+) => {
+  return `Week ${weekNumber} \n The Minimum price is *${cheapestFlight.price} Toman* on *${cheapestFlight.date}*!\n`;
 };
+
+const sendMessageToTelegram = (message: string) =>
+  axios.post(`https://api.telegram.org/${process.env.BOT_TOKEN}/sendMessage`, {
+    chat_id: process.env.CHAT_ID,
+    text: message,
+    parse_mode: "markdown",
+  });
 
 export {
   convertToISODate,
